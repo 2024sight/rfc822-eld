@@ -1,4 +1,5 @@
-# rfc822-mailzu
+# rfc822-eld
+
 PHP email address, local part and domain validator based on RFCs 822, 2822, 5322
 
 This modified version of the code allows for the partial checking of email addresses, local parts and domains.
