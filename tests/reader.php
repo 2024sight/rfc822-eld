@@ -1,4 +1,4 @@
-<?
+<?php 
 	error_reporting(30719 | 2048); # E_ALL | E_STRICT
 	ini_set("display_errors", 1);
 

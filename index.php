@@ -1,4 +1,4 @@
-<?
+<?php
 	$title = "RFC 822 Email Address Parser in PHP";
 	include('../../head.txt');
 ?>
@@ -9,22 +9,17 @@
 <h2>Source code</h2>
 
 <ul>
-	<li> <a href="http://github.com/iamcal/rfc822/blob/master/rfc822.php">rfc822.php</a> - Email Address Parser </li>
+	<li> <a href="https://github.com/2024sight/rfc822-eld/blob/master/rfc822.php">rfc822.php</a> - Email Address Parser </li>
 </ul>
 
-<h2>Download</h2>
+<h2>Demo</h2>
 
-<p>There is an <a href="/php/rfc822/demo.php">online interactive demo</a> if you'd just like to give it a try.</p>
-
-<p>You can download the latest stable version (release 11) of the functions <a href="http://github.com/downloads/iamcal/rfc822/rfc822_r11.zip">here</a>. </p>
-
-<p>The very latest versions are available from the <a href="http://github.com/iamcal/rfc822">GitHub repository</a>. </p>
-
+<p>There is an <a href="/rfc822-eld/demo.php">online interactive demo</a> if you'd just like to give it a try.</p>
 
 <h2>Tests</h2>
 
 <p>The <a href="tests/">test suite</a> shows parser's results, based on these <a href="tests/tests.xml">test definitions</a>. These are borrowed from
-<a href="http://www.dominicsayers.com/isemail/">Dominic Sayers</a> who has a similar parser. We are still arguing over certain tests ;)</p>
+<a href="http://www.dominicsayers.com/isemail/">Dominic Sayers</a> who has a similar parser.</p>
 
 
 <h2>The RFCs</h2>
@@ -99,6 +94,8 @@ ones:</p>
 
 <p>Tim Fletcher has translated the function to ruby and python: <a href="http://tfletcher.com/lib/">http://tfletcher.com/lib/</a>. </p>
 
+<p>Anton Hofland added the partial test functionality to just check local part and domain instead of full email addresses. </p>
+
 <p>
 	A fullly unpacked version of the underlying regular expression can be seen <a href="full_regexp.txt">here</a>. It's huge.
 </p>
@@ -113,6 +110,6 @@ ones:</p>
 </p>
 
 
-<?
+<?php
 	include('../../foot.txt');
 ?>

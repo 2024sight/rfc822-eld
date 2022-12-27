@@ -1,0 +1,12 @@
+rfc822-eld version 5012156+1 (14.12.2022)
+-------------------------------
+
+  - Enhanced the main function so that it can check full email addresses, or just local parts and domain names.
+    If it has been asked to check whether  a string is a full address, having been provided with just a local
+    part or domain, it will return an error. If the email address itself is syntactically incorrect, it will
+    also produce an error. Similarly, it can check whether a string might be a suitable local part or a suitable
+    domain name. By default the function will behave as before. 
+
+  - Fixed the code that drives the comment checking so that it fails if a comment is used and the flag is disabled.
+
+  - Fixed the testing and home page php code so that it works in today's world.

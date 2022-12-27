@@ -10,6 +10,10 @@
 	# GPLv3 - http://www.gnu.org/copyleft/gpl.html
 	#
 	# $Revision$
+	# This code has been modified to enable checking whether an address is a full email
+	# address or just a domain or just a local part.
+	#
+	# Modified by Anton Hofland, 2024Sight.
 	#
 
 	##################################################################################
@@ -23,13 +27,16 @@
 
 		$defaults = array(
 			'allow_comments'	=> true,
-			'public_internet'	=> true, # turn this off for 'strict' mode
+			'public_internet'	=> true,	# turn this off for 'strict' mode
+			'check_localpart'	=> true,	# localpart and domain together are
+			'check_domain'		=> true,	# an email address.
 		);
 
 		$opts = array();
 		foreach ($defaults as $k => $v) $opts[$k] = isset($options[$k]) ? $options[$k] : $v;
 		$options = $opts;
-		
+
+		if (( !$options['check_localpart'] ) && ( !$options['check_domain'] )) return 0;
 
 
 		####################################################################################
@@ -203,8 +210,19 @@
 
 		$local_part	= "(($dot_atom)|($quoted_string)|($obs_local_part))";
 		$domain		= "(($dot_atom)|($domain_literal)|($obs_domain))";
-		$addr_spec	= "$local_part\\x40$domain";
 
+		if      ((  $options['check_localpart']) && (  $options['check_domain'])) {
+			$addr_spec	= "$local_part\\x40$domain";
+		}
+		else if ((  $options['check_localpart']) && ( !$options['check_domain'])) {
+			$addr_spec	= "$local_part";
+		}
+		else if (( !$options['check_localpart']) && (  $options['check_domain'])) {
+			$addr_spec	= "$domain";
+		}
+		else {
+			return 0;
+		}
 
 
 		#
@@ -218,10 +236,13 @@
 		# we need to strip nested comments first - we replace them with a simple comment
 		#
 
-		if ($options['allow_comments']){
 
-			$email = email_strip_comments($outer_comment, $email, "(x)");
+		$stripped	= email_strip_comments($outer_comment, $email, "(x)");
+
+		if ($options['allow_comments']){
+			$email	= $stripped;
 		}
+		else if ( strcmp( $stripped, $email ) !== 0 ) return 0;
 
 
 		#
@@ -229,20 +250,40 @@
 		#
 
 		if (!preg_match("!^$addr_spec$!", $email, $m)){
-
 			return 0;
 		}
 
-		$bits = array(
-			'local'			=> isset($m[1]) ? $m[1] : '',
-			'local-atom'		=> isset($m[2]) ? $m[2] : '',
-			'local-quoted'		=> isset($m[3]) ? $m[3] : '',
-			'local-obs'		=> isset($m[4]) ? $m[4] : '',
-			'domain'		=> isset($m[5]) ? $m[5] : '',
-			'domain-atom'		=> isset($m[6]) ? $m[6] : '',
-			'domain-literal'	=> isset($m[7]) ? $m[7] : '',
-			'domain-obs'		=> isset($m[8]) ? $m[8] : '',
-		);
+		if      ((  $options['check_localpart']) && (  $options['check_domain'])) {
+			$bits = array(
+				'local'			=> isset($m[1]) ? $m[1] : '',
+				'local-atom'		=> isset($m[2]) ? $m[2] : '',
+				'local-quoted'		=> isset($m[3]) ? $m[3] : '',
+				'local-obs'		=> isset($m[4]) ? $m[4] : '',
+				'domain'		=> isset($m[5]) ? $m[5] : '',
+				'domain-atom'		=> isset($m[6]) ? $m[6] : '',
+				'domain-literal'	=> isset($m[7]) ? $m[7] : '',
+				'domain-obs'		=> isset($m[8]) ? $m[8] : '',
+			);
+		}
+		else if ((  $options['check_localpart']) && ( !$options['check_domain'])) {
+			$bits = array(
+				'local'			=> isset($m[1]) ? $m[1] : '',
+				'local-atom'		=> isset($m[2]) ? $m[2] : '',
+				'local-quoted'		=> isset($m[3]) ? $m[3] : '',
+				'local-obs'		=> isset($m[4]) ? $m[4] : '',
+			);
+		}
+		else if (( !$options['check_localpart']) && (  $options['check_domain'])) {
+			$bits = array(
+				'domain'		=> isset($m[1]) ? $m[1] : '',
+				'domain-atom'		=> isset($m[2]) ? $m[2] : '',
+				'domain-literal'	=> isset($m[3]) ? $m[3] : '',
+				'domain-obs'		=> isset($m[4]) ? $m[4] : '',
+			);
+		}
+		else {
+			return 0;
+		}
 
 
 		#
@@ -251,9 +292,22 @@
 		# way for checking IPs, label sizes, etc
 		#
 
-		if ($options['allow_comments']){
-			$bits['local']	= email_strip_comments($comment, $bits['local']);
-			$bits['domain']	= email_strip_comments($comment, $bits['domain']);
+		if ($options['check_localpart']) {
+			$stripped	= email_strip_comments($comment, $bits['local'] );
+
+			if ($options['allow_comments']) {
+				$bits['local' ]	= $stripped;
+			}
+			else if ( strcmp( $stripped, $bits['local' ] ) !== 0 ) return 0;
+		}
+
+		if ($options['check_domain']   ) {
+			$stripped	= email_strip_comments($comment, $bits['domain']);
+
+			if ($options['allow_comments']) {
+				$bits['domain']	= $stripped;
+			}
+			else if ( strcmp( $stripped, $bits['domain'] ) !== 0 ) return 0;
 		}
 
 
@@ -261,8 +315,15 @@
 		# length limits on segments
 		#
 
-		if (strlen($bits['local']) > 64) return 0;
-		if (strlen($bits['domain']) > 255) return 0;
+		if (($options['check_localpart']) && (strlen($bits['local'] ) >  64)) return 0;
+		if (($options['check_domain']   ) && (strlen($bits['domain']) > 255)) return 0;
+
+
+		#
+		# If we are not checking the domain, then we are good on the local part.
+		#
+
+		if ( !$options['check_domain'] ) return 1;
 
 
 		#
@@ -400,5 +461,4 @@
 		}
 	}
 
-	##################################################################################
 ?>

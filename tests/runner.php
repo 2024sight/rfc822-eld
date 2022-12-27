@@ -1,4 +1,4 @@
-<?
+<?php 
 	include('reader.php');
 	include('../rfc822.php');
 
@@ -15,7 +15,7 @@
 	foreach ($tests as $k => $v){
 
 		$tests[$k]['expected'] = $v['valid'] ? 1 : 0;
-		$tests[$k]['result_public'] = is_valid_email_address($v['address']) ? 1 : 0;
+		$tests[$k]['result_public'] = is_valid_email_address($v['address'], array('public_internet' => true )) ? 1 : 0;
 		$tests[$k]['result_strict'] = is_valid_email_address($v['address'], array('public_internet' => false)) ? 1 : 0;
 
 		$totals['all']++;

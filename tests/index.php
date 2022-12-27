@@ -101,7 +101,7 @@ h1 {
 
 <h1>RFC-compliant email address validation</h1>
 
-<?
+<?php
 	include('runner.php');
 
 #echo "<pre>";
@@ -129,38 +129,38 @@ h1 {
 <div class="isemail isemail_tooltip">
 	<p class="isemail_address">Percent correct</p>
 	<p class="isemail_result isemail_expected">-</p>
-	<p class="isemail_result isemail_expected"><?=floor(100 * $totals['strict'] / $totals['all'])?>%</p>
-	<p class="isemail_result isemail_expected"><?=floor(100 * $totals['public'] / $totals['all'])?>%</p>
+	<p class="isemail_result isemail_expected"><?php echo floor(100 * $totals['strict'] / $totals['all'])?>%</p>
+	<p class="isemail_result isemail_expected"><?php echo floor(100 * $totals['public'] / $totals['all'])?>%</p>
 </div>
 
 <div class="isemail isemail_tooltip">
 	<p class="isemail_address">Number correct</p>
 	<p class="isemail_result isemail_expected">-</p>
-	<p class="isemail_result isemail_expected"><?=$totals['strict']?> / <?=$totals['all']?></p>
-	<p class="isemail_result isemail_expected"><?=$totals['public']?> / <?=$totals['all']?></p>
+	<p class="isemail_result isemail_expected"><?php echo $totals['strict']?> / <?php echo $totals['all']?></p>
+	<p class="isemail_result isemail_expected"><?php echo $totals['public']?> / <?php echo $totals['all']?></p>
 </div>
 
 
-<? foreach ($tests as $test){ ?>
+<?php foreach ($tests as $test){ ?>
 
 <div class="isemail isemail_tooltip">
 	<span>
-		Test # <?=$test['id']?><br />
-		<strong><?=show_escapes(HtmlSpecialChars($test['address']))?></strong><br />
-		Expected result: <?=is_valid($test['expected'])?><br />
-<? if ($test['comment']){ ?>
-		Comment: <?=HtmlSpecialChars($test['comment'])?><br />
-<? } ?>
-		Source: <?=HtmlSpecialChars($test['source'])?>
+		Test # <?php echo $test['id']?><br />
+		<strong><?php echo show_escapes(HtmlSpecialChars($test['address']))?></strong><br />
+		Expected result: <?php echo is_valid($test['expected'])?><br />
+<?php if ($test['comment']){ ?>
+		Comment: <?php echo HtmlSpecialChars($test['comment'])?><br />
+<?php } ?>
+		Source: <?php echo HtmlSpecialChars($test['source'])?>
 	</span>
-	<p class="isemail_address"><nobr><a href="<?=HtmlSpecialChars($test['sourcelink'])?>" target="_blank"><?=show_escapes(HtmlSpecialChars($test['address']))?></a></nobr></p>
-	<p class="isemail_result isemail_expected"><?=is_valid($test['expected'])?></p>
+	<p class="isemail_address"><nobr><a href="<?php echo HtmlSpecialChars($test['sourcelink'])?>" target="_blank"><?php echo show_escapes(HtmlSpecialChars($test['address']))?></a></nobr></p>
+	<p class="isemail_result isemail_expected"><?php echo is_valid($test['expected'])?></p>
 
-	<p class="isemail_result isemail_<?=$test['result_strict']==$test['expected']?'':'un'?>expected"><?=is_valid($test['result_strict'])?></p>
-	<p class="isemail_result isemail_<?=$test['result_public']==$test['expected']?'':'un'?>expected"><?=is_valid($test['result_public'])?></p>
+	<p class="isemail_result isemail_<?php echo $test['result_strict']==$test['expected']?'':'un'?>expected"><?php echo is_valid($test['result_strict'])?></p>
+		<p class="isemail_result isemail_<?php echo $test['result_public']==$test['expected']?'':'un'?>expected"><?php echo is_valid($test['result_public'])?></p>
 </div>
 
-<? } ?>
+<?php } ?>
 
 <p style="clear: both; padding-bottom: 50px;">&nbsp;</p>
 

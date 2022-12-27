@@ -1,20 +1,28 @@
-<?
+<?php
 	include('runner.php');
 
-	$ran = 0;
-	$passed = 0;
+	$ran		= 0;
+	$public_passed	= 0;
+	$strict_passed	= 0;
 
 	foreach ($tests as $test){
 
-		if ($test['id'] > 50) continue;
-
 		$ran++;
-		if ($test['expected'] == $test['result_3696']){
-			$passed++;
-		}else{
+
+		if ($test['expected'] == $test['result_public']){
+			$public_passed++;
+		} else{
 			print_r($test);
 		}
+
+		if ($test['expected'] == $test['result_strict']){
+			$strict_passed++;
+		} else{
+			print_r($test);
+		}
+
 	}
 
-	echo "Passed $passed of $ran\n";
+	echo "Public passed $public_passed of $ran\n";
+	echo "Strict passed $strict_passed of $ran\n";
 ?>
